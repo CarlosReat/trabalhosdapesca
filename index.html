@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/leaflet.draw.css" />
+    <link rel="stylesheet" href="css/estilo.css" />
+    <link rel="stylesheet" href="css/popupMod.css">
+    <link rel="stylesheet" href="css/datatables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.draw.js"></script>
+    <script src="js/jquery.min.js" ></script>
+    <script src="js/Leaflet.PopupMovable.js"></script>
+    <script>
+
+      var highlightLayer;
+      function highlightFeature(e) {
+        highlightLayer = e.target;
+        highlightLayer.openPopup();
+      };
+
+      //map.setMaxBounds(map.getBounds());
+
+      var map = L.map('map', {
+        popupMovable: true,
+        closePopupOnClick: false,
+        zoom: 4,
+        center: L.latLng([-15, -50]),
+      }),
+      osmLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+      map.addLayer(osmLayer);
+
+    </script>
+    <script>
+      let db_data = L.layerGroup().addTo(map);
+      // Add data using the SQL API
+      let url = "http://200.132.255.26:4000/sql?q=";
+      let sql_query = "SELECT * FROM base";
+      let sql_query_1 = "SELECT DISTINCT nome FROM base ORDER BY nome";
+
+      let pesq = L.control({position: "topleft"});
+      pesq.onAdd = function() {
+      let div = L.DomUtil.create("div", "dropdown");
+        div.innerHTML =
+          '<select id="autores">' +
+          '</select>';
+        return div;
+      };
+      pesq.addTo(map);
+
+      fetch(url + sql_query)
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(data) {
+          L.geoJSON(data, {onEachFeature: addPopup}).addTo(db_data);
+      });
+
+      fetch(url + sql_query_1)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          let html = "";
+          data.forEach(function(element) {
+            html += "<option>" + element.nome + "</option>";
+          });
+          document.getElementById("autores").innerHTML = html;
+        });
+
+      function update_layer() {
+        let sel_value = document.getElementById("autores").value;
+        let sql_query_2 = "SELECT * FROM base WHERE nome = '" + sel_value + "'";
+        fetch(url + sql_query_2)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(data) {
+            db_data.clearLayers();
+            L.geoJSON(data, {onEachFeature: addPopup}).addTo(db_data);
+          });
+      }
+      document
+        .getElementById("autores")
+        .addEventListener("change", update_layer);
+    </script>
+
+
+    <script>
+      function addPopup(feature, layer) {
+        layer.on({mouseover: highlightFeature})
+        layer.bindPopup(
+          '<table id="tabelateste">' +
+            '<caption>' +
+              feature.properties.dissertacoes_e_teses +
+            '</caption>' +
+
+            '<tbody>' +
+              '<tr>' +
+                '<td>' +
+                  'Nome: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.nome +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Título: ' +
+                '</td>' +
+                '<td id="titulo">' +
+                  feature.properties.titulo +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Localidade: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.localidade +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Estado: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.estado +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Região: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.regiao +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Instituição: ' +
+                '</td>'+
+                '<td>' +
+                  feature.properties.ies +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Tema: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.grande_tema +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Conceitos: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.conceitos +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Metodologia: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.metodologia +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Conflitos: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.conflitos +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Arranjo: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.arranjo +
+                '</td>' +
+              '</tr>' +
+
+              '<tr>' +
+                '<td>' +
+                  'Ano de Publicação: ' +
+                '</td>' +
+                '<td>' +
+                  feature.properties.ano +
+                '</td>' +
+              '</tr>' +
+
+            '</tbody>' +
+          '</table>'+
+
+          '<form action="' +
+            feature.properties.pdf +
+            '">' +
+            '<input type="submit" value="Abrir trabalho" formtarget="_blank"/>'+
+          '</form>'
+        );
+      }
+    </script>
+  </body>
+</html>

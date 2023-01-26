@@ -1,0 +1,90 @@
+table{
+ border-collapse: collapse;
+ width: 100%;
+}
+tr{
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+td{
+  border-bottom: 1px solid;
+  border-top: 1px solid;
+  text-align: left;
+  padding: 3px;
+}
+#titulo{
+    text-transform: uppercase;
+}
+
+caption{
+  background-color: #003566;
+  color: white;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-radius: 5px;
+  padding: 14px 20px;
+  text-transform: uppercase;
+}
+
+#popup {
+  height: 600px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+div {
+  margin-bottom: 5px;
+}
+
+input[type=text], select{
+  border: none;
+  border-bottom: 2px solid black;
+  margin-bottom: 10px;
+  width: 88%;
+  padding: 12px;
+  resize: vertical;
+}
+select{
+  border: none;
+  border-bottom: 2px solid black;
+  margin-bottom: 10px;
+  width: 96%;
+  padding: 12px;
+  resize: vertical;
+}
+
+input[type=checkbox] {
+  margin-left: 15px;
+}
+
+input[type=button] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]{
+  background-color: #003566;
+  width: 100%;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+#autores {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background-color: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
